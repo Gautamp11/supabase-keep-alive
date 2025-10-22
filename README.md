@@ -1,7 +1,5 @@
 # 🟢 Supabase Keep-Alive
 
-Keep your Supabase projects awake automatically — no setup headaches.
-
 This tool pings your Supabase projects twice a week to prevent free-tier projects from going to sleep.
 
 ---
@@ -67,6 +65,9 @@ npm run ping
 
 ⚡ Notes
 Keep URLs in GitHub Secrets — never hardcode them.
+
 Works for both free-tier and paid projects.
+
 Multiple projects? Just separate URLs with a comma.
+
 The workflow is pre-configured to run Monday & Thursday at 9 AM UTC, but users can change the schedule in .github/workflows/ping.yml if desired.
