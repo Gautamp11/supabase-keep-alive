@@ -1,4 +1,3 @@
-// index.js
 import https from "https";
 
 const urls = process.env.SUPABASE_URLS?.split(",") || [];
@@ -12,12 +11,22 @@ if (urls.length === 0) {
 
 console.log("🔁 Pinging Supabase projects...\n");
 
-urls.forEach((url) => {
-  https
-    .get(url, (res) => {
-      console.log(`✅ ${url} → ${res.statusCode}`);
-    })
-    .on("error", (err) => {
-      console.error(`❌ ${url} → ${err.message}`);
-    });
-});
+async function pingURL(url) {
+  return new Promise((resolve) => {
+    https
+      .get(url, (res) => {
+        console.log(`✅ ${url} → ${res.statusCode}`);
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error(`❌ ${url} → ${err.message}`);
+        resolve();
+      });
+  });
+}
+
+(async () => {
+  await Promise.all(urls.map(pingURL));
+  console.log("\n🏁 Done! All Supabase projects pinged successfully.");
+  process.exit(0);
+})();
