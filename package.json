@@ -1,0 +1,20 @@
+{
+  "name": "supabase-keep-alive",
+  "version": "1.0.0",
+  "description": "Keep your Supabase projects awake by pinging them weekly.",
+  "main": "index.js",
+  "scripts": {
+    "ping": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gautamp11/supabase-keep-alive.git"
+  },
+  "keywords": [],
+  "author": "Gautam Kumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gautamp11/supabase-keep-alive/issues"
+  },
+  "homepage": "https://github.com/gautamp11/supabase-keep-alive#readme"
+}
