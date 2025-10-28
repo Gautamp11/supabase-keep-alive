@@ -12,9 +12,10 @@ if (urls.length === 0) {
 console.log("🔁 Pinging Supabase projects...\n");
 
 async function pingURL(url) {
+  const apiEndpoint = `${url.replace(/\/$/, "")}/rest/v1/`;
   return new Promise((resolve) => {
     https
-      .get(url, (res) => {
+      .get(apiEndpoint, (res) => {
         console.log(`✅ ${url} → ${res.statusCode}`);
         resolve();
       })
