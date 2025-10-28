@@ -16,11 +16,11 @@ async function pingURL(url) {
   return new Promise((resolve) => {
     https
       .get(apiEndpoint, (res) => {
-        console.log(`✅ ${url} → ${res.statusCode}`);
+        console.log(`✅ ${apiEndpoint} → ${res.statusCode}`);
         resolve();
       })
       .on("error", (err) => {
-        console.error(`❌ ${url} → ${err.message}`);
+        console.error(`❌ ${apiEndpoint} → ${err.message}`);
         resolve();
       });
   });
