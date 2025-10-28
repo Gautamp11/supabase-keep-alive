@@ -13,7 +13,12 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npm run ping
+      - name: Run ping script
         env:
           SUPABASE_URLS: ${{ secrets.SUPABASE_URLS }}
           SUPABASE_ANON_KEYS: ${{ secrets.SUPABASE_ANON_KEYS }}
+        run: |
+          echo "Checking environment variables (masked)..."
+          if [ -n "$SUPABASE_URLS" ]; then echo "SUPABASE_URLS is set"; else echo "SUPABASE_URLS is not set"; fi
+          if [ -n "$SUPABASE_ANON_KEYS" ]; then echo "SUPABASE_ANON_KEYS is set"; else echo "SUPABASE_ANON_KEYS is not set"; fi
+          npm run ping
