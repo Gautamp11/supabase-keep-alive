@@ -1,6 +1,7 @@
 import https from "https";
 
 const urls = process.env.SUPABASE_URLS?.split(",") || [];
+const apiKeys = process.env.SUPABASE_ANON_KEYS?.split(",") || [];
 
 if (urls.length === 0) {
   console.error(
@@ -9,25 +10,45 @@ if (urls.length === 0) {
   process.exit(1);
 }
 
+if (apiKeys.length === 0) {
+  console.error(
+    "⚠️ No API keys provided. Set SUPABASE_ANON_KEYS in your GitHub secrets."
+  );
+  process.exit(1);
+}
+
+if (urls.length !== apiKeys.length) {
+  console.error(
+    "⚠️ Number of URLs and API keys don't match. Please provide one API key for each URL."
+  );
+  process.exit(1);
+}
+
 console.log("🔁 Pinging Supabase projects...\n");
 
-async function pingURL(url) {
+async function pingURL(url, apiKey) {
   const apiEndpoint = `${url.replace(/\/$/, "")}/rest/v1/`;
   return new Promise((resolve) => {
+    const options = {
+      headers: {
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
+      },
+    };
     https
-      .get(apiEndpoint, (res) => {
-        console.log(`✅ ${apiEndpoint} → ${res.statusCode}`);
+      .get(apiEndpoint, options, (res) => {
+        console.log(`✅ ${url} → ${res.statusCode}`);
         resolve();
       })
       .on("error", (err) => {
-        console.error(`❌ ${apiEndpoint} → ${err.message}`);
+        console.error(`❌ ${url} → ${err.message}`);
         resolve();
       });
   });
 }
 
 (async () => {
-  await Promise.all(urls.map(pingURL));
+  await Promise.all(urls.map((url, index) => pingURL(url, apiKeys[index])));
   console.log("\n🏁 Done! All Supabase projects pinged successfully.");
   process.exit(0);
 })();

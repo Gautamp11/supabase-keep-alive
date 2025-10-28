@@ -12,18 +12,23 @@ This tool pings your Supabase projects twice a week to prevent free-tier project
 
 ---
 
-## 🔹 Get Your Supabase Base URL
+## 🔹 Get Your Supabase Project Details
 
-Your **Supabase project URL** looks like:
-https://tifqawwuaiorgvqycztr.supabase.co
+You'll need two things from your Supabase project:
 
-**To find it:**
+1. **Project URL** looks like:
+   https://tifqawwuaiorgvqycztr.supabase.co
 
-1. Go to [Supabase](https://app.supabase.com/) and select your project.
-2. Click **Settings → API**.
-3. Copy the **Project URL**.
+2. **Anon/Public API Key** looks like:
+   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-> This is the only thing you need to keep your project awake.
+**To find these:**
+
+1. Go to [Supabase](https://app.supabase.com/) and select your project
+2. Click **Project Settings → API**
+3. Copy both the **Project URL** and **anon/public** key (under API Keys section)
+
+> Both the URL and API key are required to keep your project awake.
 
 ---
 
@@ -34,12 +39,25 @@ https://tifqawwuaiorgvqycztr.supabase.co
    - Click the **Fork** button in the top-right corner.
    - This creates a copy of the repo in your GitHub account.
 
-2. **Add your Supabase URLs as a GitHub Secret**
-   - Go to **Settings → Secrets and variables → Actions → New repository secret**
+2. **Add your Supabase details as GitHub Secrets**
+   - Go to **Settings → Secrets and variables → Actions**
+   - Add two new repository secrets:
+
+   a. First secret for URLs:
    - Name: `SUPABASE_URLS`
    - Value: Your project URL(s), comma-separated if multiple:
+     ```
+     https://tifqawwuaiorgvqycztr.supabase.co,https://another.supabase.co
+     ```
 
-https://tifqawwuaiorgvqycztr.supabase.co,https://another.supabase.co
+   b. Second secret for API keys:
+   - Name: `SUPABASE_ANON_KEYS`
+   - Value: Your anon/public API key(s), comma-separated in the same order as URLs:
+     ```
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+     ```
+
+   > ⚠️ Important: Make sure the order of API keys matches the order of URLs!
 
 3. **Done!**
 
@@ -52,10 +70,26 @@ https://tifqawwuaiorgvqycztr.supabase.co,https://another.supabase.co
 
 If you want to test it locally:
 
+1. Clone and set up the project:
 ```bash
 git clone https://github.com/<your-username>/supabase-keep-alive.git
 cd supabase-keep-alive
 npm install
+```
+
+2. Set your environment variables:
+```bash
+# On Windows (PowerShell)
+$env:SUPABASE_URLS="https://your-project.supabase.co"
+$env:SUPABASE_ANON_KEYS="your-anon-key"
+
+# On Linux/Mac
+export SUPABASE_URLS="https://your-project.supabase.co"
+export SUPABASE_ANON_KEYS="your-anon-key"
+```
+
+3. Run the script:
+```bash
 npm run ping
 ```
 
