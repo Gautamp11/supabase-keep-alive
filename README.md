@@ -40,10 +40,12 @@ You'll need two things from your Supabase project:
    - This creates a copy of the repo in your GitHub account.
 
 2. **Add your Supabase details as GitHub Secrets**
+
    - Go to **Settings → Secrets and variables → Actions**
    - Add two new repository secrets:
 
    a. First secret for URLs:
+
    - Name: `SUPABASE_URLS`
    - Value: Your project URL(s), comma-separated if multiple:
      ```
@@ -51,6 +53,7 @@ You'll need two things from your Supabase project:
      ```
 
    b. Second secret for API keys:
+
    - Name: `SUPABASE_ANON_KEYS`
    - Value: Your anon/public API key(s), comma-separated in the same order as URLs:
      ```
@@ -71,6 +74,7 @@ You'll need two things from your Supabase project:
 If you want to test it locally:
 
 1. Clone and set up the project:
+
 ```bash
 git clone https://github.com/<your-username>/supabase-keep-alive.git
 cd supabase-keep-alive
@@ -78,6 +82,7 @@ npm install
 ```
 
 2. Set your environment variables:
+
 ```bash
 # On Windows (PowerShell)
 $env:SUPABASE_URLS="https://your-project.supabase.co"
@@ -89,6 +94,7 @@ export SUPABASE_ANON_KEYS="your-anon-key"
 ```
 
 3. Run the script:
+
 ```bash
 npm run ping
 ```
