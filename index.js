@@ -1,7 +1,12 @@
+import { log } from "console";
 import https from "https";
+import { url } from "inspector";
 
 const urls = process.env.SUPABASE_URLS?.split(",") || [];
 const apiKeys = process.env.SUPABASE_ANON_KEYS?.split(",") || [];
+
+console.log(apiKeys);
+console.log(urls);
 
 if (urls.length === 0) {
   console.error(
