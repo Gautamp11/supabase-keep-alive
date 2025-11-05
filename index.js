@@ -39,11 +39,11 @@ async function pingURL(url, apiKey) {
     };
     https
       .get(apiEndpoint, options, (res) => {
-        console.log(`✅ ${url} → ${res.statusCode}`);
+        console.log(`✅ ${apiEndpoint} → ${res.statusCode}`);
         resolve();
       })
       .on("error", (err) => {
-        console.error(`❌ ${url} → ${err.message}`);
+        console.error(`❌ ${apiEndpoint} → ${err.message}`);
         resolve();
       });
   });
