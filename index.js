@@ -1,3 +1,4 @@
+import { log } from "console";
 import https from "https";
 
 const urls =
@@ -30,6 +31,7 @@ console.log("🔁 Pinging Supabase projects...\n");
 
 async function pingURL(url, apiKey) {
   const apiEndpoint = `${url.replace(/\/$/, "")}/rest/v1/`;
+  console.log(apiEndpoint);
   return new Promise((resolve) => {
     const options = {
       headers: {
