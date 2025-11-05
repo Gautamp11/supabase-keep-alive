@@ -50,6 +50,13 @@ async function pingURL(url, apiKey) {
 }
 
 (async () => {
-  await Promise.all(urls.map((url, i) => pingURL(url, apiKeys[i])));
-  console.log("\n🏁 Done! All Supabase projects pinged successfully.");
+  try {
+    await Promise.all(urls.map((url, i) => pingURL(url, apiKeys[i])));
+    console.log("\n🏁 Done! All Supabase projects pinged successfully.");
+  } catch (err) {
+    console.error("Unexpected error:", err);
+  } finally {
+    // ✅ ensure GitHub Action exits cleanly
+    process.exit(0);
+  }
 })();
