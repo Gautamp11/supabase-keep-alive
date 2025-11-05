@@ -27,14 +27,17 @@ console.log("🔁 Pinging Supabase REST endpoints...\n");
 async function pingURL(url, apiKey) {
   return new Promise((resolve) => {
     const req = https.request(
-      url,
+      `${url}/rest/v1/`,
       {
+        method: "GET",
         headers: {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
+          Connection: "close", // ✅ ensure socket closes after response
         },
       },
       (res) => {
+        res.resume(); // ✅ consume response fully to allow socket close
         console.log(`✅ ${url} → ${res.statusCode}`);
         resolve();
       }
@@ -50,13 +53,8 @@ async function pingURL(url, apiKey) {
 }
 
 (async () => {
-  try {
-    await Promise.all(urls.map((url, i) => pingURL(url, apiKeys[i])));
-    console.log("\n🏁 Done! All Supabase projects pinged successfully.");
-  } catch (err) {
-    console.error("Unexpected error:", err);
-  } finally {
-    // ✅ ensure GitHub Action exits cleanly
-    process.exit(0);
-  }
+  await Promise.all(urls.map((url, i) => pingURL(url, apiKeys[i])));
+  console.log("\n🏁 Done! All Supabase projects pinged successfully.");
+  https.globalAgent.destroy(); // ✅ close all remaining sockets
+  process.exit(0);
 })();
