@@ -1,113 +1,101 @@
-# 🟢 Supabase Keep-Alive
+🟢 Supabase Keep-Alive (Free-Tier Saver)
 
-This tool pings your Supabase projects twice a week to prevent free-tier projects from going to sleep.
+Keep your Supabase free-tier projects awake automatically using GitHub Actions.
+No server, no cron setup, just a lightweight scheduled ping 💡
 
----
+🚀 How It Works
 
-## 🔹 How It Works
+This GitHub Action runs twice a week and pings a live REST endpoint in your Supabase project — keeping it active and preventing sleep.
 
-- GitHub Actions runs a Node.js script on a schedule.
-- The script pings your Supabase project URLs to keep them active.
-- No server, no manual work — just fork and add your project URL(s).
+⚙️ Setup (Takes <3 Minutes)
+1️⃣ Fork This Repo
 
----
+Click Fork (top right on GitHub).
+This creates your own copy — GitHub Actions will run from your account.
 
-## 🔹 Get Your Supabase Project Details
+2️⃣ Create a Small “Ping” Table in Supabase
 
-You'll need two things from your Supabase project:
+For each project you want to keep alive:
 
-1. **Project URL** looks like:
-   https://tifqawwuaiorgvqycztr.supabase.co
+Open SQL Editor → New Query
 
-2. **Anon/Public API Key** looks like:
-   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Paste and run:
 
-**To find these:**
+create table if not exists ping_test (
+id serial primary key,
+note text
+);
+insert into ping_test (note) values ('keep alive');
 
-1. Go to [Supabase](https://app.supabase.com/) and select your project
-2. Click **Project Settings → API**
-3. Copy both the **Project URL** and **anon/public** key (under API Keys section)
+That’s all — now you have a tiny table you can safely query.
 
-> Both the URL and API key are required to keep your project awake.
+3️⃣ Add GitHub Secrets
 
----
+In your forked repo:
+Settings → Secrets → Actions → New repository secret
 
-## 🔹 Quick Setup (for users)
+Add these two secrets:
 
-1. **Fork this repository**
+SUPABASE_URLS
 
-   - Click the **Fork** button in the top-right corner.
-   - This creates a copy of the repo in your GitHub account.
+https://tifqawwuaiorgvqycztr.supabase.co/rest/v1/ping_test?select=id,
+https://gnrpfrrighiptxealvoy.supabase.co/rest/v1/ping_test?select=id,
+https://fapzspalbjziliwycaij.supabase.co/rest/v1/ping_test?select=id,
+https://lngdvxlzuxjxxtrkrihm.supabase.co/rest/v1/ping_test?select=id,
+https://gvpmwpuskokddtkthhme.supabase.co/rest/v1/ping_test?select=id,
+https://kedfrvwwggcydiomjriz.supabase.co/rest/v1/ping_test?select=id
 
-2. **Add your Supabase details as GitHub Secrets**
+SUPABASE_ANON_KEYS
 
-   - Go to **Settings → Secrets and variables → Actions**
-   - Add two new repository secrets:
+<anon_key_for_project_1>,
+<anon_key_for_project_2>,
+<anon_key_for_project_3>,
+<anon_key_for_project_4>,
+<anon_key_for_project_5>,
+<anon_key_for_project_6>
 
-   a. First secret for URLs:
+👉 You’ll find your Anon Key under
+Supabase → Settings → API → Project API Keys
 
-   - Name: `SUPABASE_URLS`
-   - Value: Your project URL(s), comma-separated if multiple:
-     ```
-     https://tifqawwuaiorgvqycztr.supabase.co,https://another.supabase.co
-     ```
+⚠️ Make sure the number of URLs and keys match (same order).
 
-   b. Second secret for API keys:
+4️⃣ That’s It 🎉
 
-   - Name: `SUPABASE_ANON_KEYS`
-   - Value: Your anon/public API key(s), comma-separated in the same order as URLs:
-     ```
-     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-     ```
+GitHub Actions will:
 
-   > ⚠️ Important: Make sure the order of API keys matches the order of URLs!
+Run every Monday and Thursday at 6 AM UTC
 
-3. **Done!**
+Ping all your Supabase projects’ /rest/v1/ping_test?select=id endpoint
 
-- GitHub Actions will automatically ping your projects on the schedule.
-- No further setup needed.
+Log results in the Actions tab
 
----
+You don’t need to keep anything running — GitHub handles the schedule automatically.
 
-## 🔹 Optional: Run manually
+🔒 Security Note
 
-If you want to test it locally:
+Use only your Anon Key (never your Service Role key).
+The Anon key is safe and read-only for this purpose.
 
-1. Clone and set up the project:
+🧩 Optional: Edge Function Method
 
-```bash
-git clone https://github.com/<your-username>/supabase-keep-alive.git
-cd supabase-keep-alive
-npm install
-```
+If you prefer not to create a table, deploy a simple Edge Function instead:
 
-2. Set your environment variables:
+// supabase/functions/ping/index.ts
+export const onRequest = () => new Response("pong", { status: 200 });
 
-```bash
-# On Windows (PowerShell)
-$env:SUPABASE_URLS="https://your-project.supabase.co"
-$env:SUPABASE_ANON_KEYS="your-anon-key"
+Then deploy it and use this URL instead:
 
-# On Linux/Mac
-export SUPABASE_URLS="https://your-project.supabase.co"
-export SUPABASE_ANON_KEYS="your-anon-key"
-```
+https://<your-project>.supabase.co/functions/v1/ping
 
-3. Run the script:
+🕒 Custom Schedule (optional)
 
-```bash
-npm run ping
-```
+You can edit .github/workflows/keep-alive.yml and change:
 
-🔁 Pinging Supabase projects...
-✅ https://tifqawwuaiorgvqycztr.supabase.co → 200
-🏁 Done! All Supabase projects pinged successfully.
+cron: "0 6 \* \* 1,4"
 
-⚡ Notes
-Keep URLs in GitHub Secrets — never hardcode them.
+to your own schedule (e.g., every day).
 
-Works for both free-tier and paid projects.
+❤️ Credits
 
-Multiple projects? Just separate URLs with a comma.
-
-The workflow is pre-configured to run Monday & Thursday at 9 AM UTC, but users can change the schedule in .github/workflows/ping.yml if desired.
+Built by Gautam Kumar
+to save Supabase developers from sleeping projects 😄
